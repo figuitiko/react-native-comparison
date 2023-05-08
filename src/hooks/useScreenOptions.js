@@ -1,18 +1,24 @@
 import { DrawerActions, useNavigation } from '@react-navigation/native'
 import { View, TouchableOpacity } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
+import useAuthStore from '../store/useAuthStore'
 
-const handleGoBack = (navigation) => {
+const handleGoBack = (navigation, user) => {
   const canGoBack = navigation.canGoBack()
   if (canGoBack) {
     navigation.goBack()
   } else {
-    navigation.navigate('home')
+    if (user) {
+      navigation.navigate('home')
+    } else {
+      navigation.navigate('login')
+    }
   }
 }
 
 const useScreenOptions = () => {
   const navigation = useNavigation()
+  const user = useAuthStore(state => state.user)
   return {
     headerStyle: {
       backgroundColor: 'rgb(251 146 60)'
@@ -20,7 +26,7 @@ const useScreenOptions = () => {
     headerTintColor: 'black',
     headerLeft: () => (
       <View>
-        <TouchableOpacity onPress={() => handleGoBack(navigation)} className='pl-4'>
+        <TouchableOpacity onPress={() => handleGoBack(navigation, user)} className='pl-4'>
           <Icon name='arrow-back' size={30} color='black' />
         </TouchableOpacity>
       </View>

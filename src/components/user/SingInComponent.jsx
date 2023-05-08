@@ -3,14 +3,20 @@ import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 import { useState } from 'react'
+import { loginFetch } from '../../fetchers/fetchers'
+import useAuthStore from '../../store/useAuthStore'
+import { useNavigation } from '@react-navigation/native'
+import { toastConfig } from '../../util/toast'
 
 const schema = yup.object().shape({
-  email: yup.string().email().required(),
-  password: yup.string().required()
+  email: yup.string().email('Escribe una direccion Email').required(' el campo es requerido'),
+  password: yup.string().required('El campo es Requerido').min(6, 'La contraseña debe tener al menos 6 caracteres')
 })
 
 const SingInComponent = () => {
+  const navigation = useNavigation()
   const [bgInColor, setBgInColor] = useState('')
+  const setUser = useAuthStore(state => state.setUser)
   const { control, handleSubmit, formState: { errors } } = useForm({
     defaultValues: {
       email: '',
@@ -18,9 +24,24 @@ const SingInComponent = () => {
     },
     resolver: yupResolver(schema)
   })
-  const onSubmit = data => {
-    console.log(errors)
-    console.log(data)
+  const onSubmit = async (data) => {
+    const { email, password } = data
+    try {
+      const rsp = await loginFetch(email, password)
+      const dataRsp = rsp.data.data
+      const user = {
+        ...dataRsp.foundUser,
+        token: dataRsp.token
+      }
+      setUser(user)
+      navigation.navigate('home')
+    } catch (error) {
+      if (error.response) {
+        if (error.response.status === 404) return toastConfig.error({ text1: 'Revisa tus credenciales', text2: 'Usuario o contraseña incorrectos' })
+        if (error.response.status === 401) return toastConfig.error({ text1: 'Revisa tus credenciales', text2: 'Usuario o contraseña incorrectos' })
+      }
+      console.log('error', error)
+    }
   }
   const handlePressIn = () => {
     setBgInColor('bg-orange-400')
@@ -38,10 +59,10 @@ const SingInComponent = () => {
         render={({ field: { onChange, onBlur, value } }) => (
           <TextInput
             className='border-2 border-black rounded-md p-2'
-            placeholder='email'
+            placeholder='Correo electronico'
             onBlur={onBlur}
             onChangeText={onChange}
-            value={value}
+            value={value.toLowerCase()}
           />
         )}
         name='email'
@@ -56,7 +77,7 @@ const SingInComponent = () => {
         render={({ field: { onChange, onBlur, value } }) => (
           <TextInput
             className='border-2 border-black rounded-md p-2 mt-4'
-            placeholder='password'
+            placeholder='Contraseña'
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}

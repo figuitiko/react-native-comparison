@@ -1,6 +1,6 @@
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import Root from '../share/Root'
+import Root from '../drawer/Root'
 
 const Stack = createNativeStackNavigator()
 const StackNavigatorComponent = () => {
