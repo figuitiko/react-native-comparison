@@ -11,7 +11,7 @@ const handleGoBack = (navigation, user) => {
     if (user) {
       navigation.navigate('home')
     } else {
-      navigation.navigate('login')
+      navigation.navigate('publicHome')
     }
   }
 }

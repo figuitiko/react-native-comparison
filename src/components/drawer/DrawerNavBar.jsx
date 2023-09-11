@@ -10,6 +10,14 @@ const DrawerNavBar = () => {
       {
         !user &&
         (
+          <Link to='/publicHome'>
+            <DrawerItemNav textContent='Inicio' iconVal='home' colorVal='blue' />
+          </Link>
+        )
+      }
+      {
+        !user &&
+        (
           <Link to='/login'>
             <DrawerItemNav textContent='Iniciar sesión' iconVal='login' colorVal='green' />
           </Link>

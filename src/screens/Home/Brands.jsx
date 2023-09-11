@@ -1,9 +1,10 @@
-import { View, Text } from 'react-native'
+import { View } from 'react-native'
+import SearchBrand from '../../components/brands/SearchBrand'
 
 const Brands = () => {
   return (
-    <View>
-      <Text>Brands</Text>
+    <View className='items-center'>
+      <SearchBrand />
     </View>
   )
 }

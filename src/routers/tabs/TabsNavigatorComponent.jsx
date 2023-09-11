@@ -3,9 +3,14 @@ import Cars from '../../screens/Home/Cars'
 import Brands from '../../screens/Home/Brands'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 
+const routesDefined = {
+  brands: { name: 'Brands', component: Brands },
+  cars: { name: 'Cars', component: Cars }
+}
+
 const Tab = createBottomTabNavigator()
 
-const TabsNavigatorComponent = () => {
+const TabsNavigatorComponent = ({ routes }) => {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -27,8 +32,11 @@ const TabsNavigatorComponent = () => {
         tabBarStyle: { backgroundColor: 'rgb(251 146 60)' }
       })}
     >
-      <Tab.Screen name='Cars' component={Cars} />
-      <Tab.Screen name='Brands' component={Brands} />
+      {
+        routes.map((route, index) => (
+          <Tab.Screen key={index} name={routesDefined[route].name} component={routesDefined[route].component} />
+        ))
+      }
     </Tab.Navigator>
   )
 }
